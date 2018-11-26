@@ -72,6 +72,60 @@ class Book {
 
     }
 
+    function createBook($authorId){        
+        
+        $query = "INSERT INTO
+                    " . $this->table_name . "
+                SET
+                    titulo=:titulo, fecha_edicion=:fecha_edicion";
+ 
+        $stmt = $this->conn->prepare($query);
+ 
+        $this->titulo=htmlspecialchars(strip_tags($this->titulo));
+        $this->fecha_edicion=htmlspecialchars(strip_tags($this->fecha_edicion));
+ 
+        $stmt->bindParam(":titulo", $this->titulo);
+        $stmt->bindParam(":fecha_edicion", $this->fecha_edicion);
+
+ 
+        if($stmt->execute()){
+            $lastBookId = $this->conn->lastInsertId();
+            if(isset($lastId)) {
+                echo "LAST ID ".$lastBookId;
+                insertAuthorBook($authorId, $lastBookId);
+            }
+            
+            return true;
+        }else{
+            return false;
+        }        
+ 
+    }
+
+    function insertAuthorBook($authorId, $bookId) {
+
+        $query = "INSERT INTO
+            autor_libro
+        SET
+            id_autor=:id_autor, id_libro=:id_libro";
+ 
+        $stmt = $this->conn->prepare($query);
+ 
+        $this->id_autor=htmlspecialchars(strip_tags($id_autor));
+        $this->id_libro=htmlspecialchars(strip_tags($id_libro));
+ 
+        $stmt->bindParam(":id_autor", $id_autor);
+        $stmt->bindParam(":id_libro", $id_libro);
+
+ 
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }  
+
+    }
+
     
 }
 ?>

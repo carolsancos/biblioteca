@@ -1,6 +1,5 @@
 <?php
 
-// include database and object files
 include_once 'config/database.php';
 include_once 'objects/book.php';
 include_once 'objects/author.php';

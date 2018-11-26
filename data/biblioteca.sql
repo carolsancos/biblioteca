@@ -74,3 +74,5 @@ CROSS JOIN libro AS l
 WHERE a.nombre = 'David Lynch'
 AND l.titulo = 'Regreso a Twin Peaks';
 
+
+
