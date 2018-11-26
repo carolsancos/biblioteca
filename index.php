@@ -1,4 +1,6 @@
 <?php
+// To display special characters
+header('Content-Type: text/html; charset=ISO-8859-1');
 
 include_once 'config/database.php';
 include_once 'objects/book.php';
@@ -73,6 +75,7 @@ echo "</div>";
 </p>
 <hr>
 
+
 <?php
 
 // display the books if there are any
@@ -90,7 +93,7 @@ if($num > 0){
             extract($row);
  
             echo "<tr>";
-                echo "<td>{$titulo}</td>";
+                echo "<td><a href='create_book.php?id_libro={$id_libro}'>{$titulo}</a></td>";
                 echo "<td>{$fecha_edicion}</td>";
                 echo "<td>{$nro_autores}</td>";
  

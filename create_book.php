@@ -1,4 +1,6 @@
 <?php
+// To display special characters
+header('Content-Type: text/html; charset=ISO-8859-1');
 
 include_once 'config/database.php';
 include_once 'objects/book.php';
@@ -12,17 +14,17 @@ $author = new Author($db);
 
 $page_title = "Crear Libro";
 include_once "header.php";
-
-// Clean special characters in a text
-function clean($z){
-    $z = strtolower($z);
-    $z = preg_replace('/[^a-z0-9 -]+/', '', $z);
-    return trim($z, '-');
-}
  
 echo "<div class='right-button-margin'>";
     echo "<a href='index.php' class='btn btn-default pull-right'>Ver Libros</a>";
 echo "</div>";
+
+if(isset($_GET['id_libro'])) {
+    $id_libro = intval($_GET['id_libro']);
+    $stmt = $book->findById($id_libro);
+    $num = $stmt->rowCount();
+}
+
  
 ?>
 
@@ -30,44 +32,43 @@ echo "</div>";
 
 if($_POST){
  
-    // set product property values
     $book->titulo = $_POST['titulo'];
     $book->fecha_edicion = $_POST['fecha_edicion'];
     if(!empty($_POST['check_autores'])) {
         $autoresList = $_POST['check_autores'];
 
         foreach ($autoresList as $autorId) {
+            echo "ID AUTOR ".$autorId; echo "<br />";
             $bookCreated = $book->createBook($autorId);
-            echo $bookCreated;
+            if($bookCreated){
+                echo "<div class='alert alert-success'>El libro fue creado.</div>";
+            }else{
+                echo "<div class='alert alert-danger'>No se pudo crear el libro.</div>";
+            }
+
         }
 
     }
 
-    //echo $book->titulo; echo "<br/>";
-    //echo $book->fecha_edicion; echo "<br/>";
-
-    /*
-    if(!empty($_POST['check_autores'])) {
-        foreach($_POST['check_autores'] as $check) {
-            echo $check;
-            echo "<br/>";
-        }
-    }
-    */   
- 
-    /*
-    if($book->createBook($autorId)){
-        echo "<div class='alert alert-success'>El libro fue creado.</div>";
-    }else{
-        echo "<div class='alert alert-danger'>No se pudo crear el libro.</div>";
-    }
-    */
-    
+    echo $book->titulo; echo "<br/>";
+    echo $book->fecha_edicion; echo "<br/>";    
     
 }
 ?>
  
 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+    <?php         
+        if(isset($num) && $num > 0) {
+            
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+
+                $time = strtotime($fecha_edicion);
+                $newformatedDate = date('d-m-Y', $time);
+
+            }
+        }
+    ?>
     <div class='table-responsive'>
         <div class="container">
             <div class="row">
@@ -75,17 +76,17 @@ if($_POST){
                     <div class="row">
                         <p>
                             <label><b>T&iacute;tulo &nbsp;&nbsp; </b></label>          
-                            <input type="text" name="titulo">
+                            <input type="text" name="titulo" value="<?php if(isset($titulo)) echo $titulo; ?>">
                         </p>
                     </div>
                     <div class="row">
                         <p>
                             <label><b>Edici&oacute;n </b></label>          
                             <span class="datepicker">
-                                <input type="text" id="datepicker">     
+                                <input type="text" id="datepicker" value="<?php if(isset($newformatedDate)) echo $newformatedDate; ?>">     
                                 <i class="fa fa-calendar" id="calendar-icon" aria-hidden="true"></i>
                             </span>
-                            <input type="hidden" id="dbdatepicker" name="fecha_edicion">
+                            <input type="hidden" id="dbdatepicker" name="fecha_edicion" value="<?php if(isset($newformatedDate)) echo $newformatedDate; ?>">
                         </p>
                     </div>
                     
@@ -106,7 +107,7 @@ if($_POST){
                                 extract($row_author);
                                 echo "<tr>";
                                 echo "<td>";
-                                echo "<input type='checkbox' name='check_autores[]'' value='{$id_autor}'>  ".clean($nombre);
+                                echo "<input type='checkbox' name='check_autores[]'' value='{$id_autor}'>  ".$nombre;
                                 echo "</td>";
                                 echo "</tr>";
                             }

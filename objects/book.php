@@ -63,8 +63,6 @@ class Book {
         GROUP BY libro.id_libro
         ORDER BY libro.titulo";
 
-        //echo $query;
-
         $stmt = $this->conn->prepare( $query );
         $stmt->execute();
      
@@ -72,37 +70,7 @@ class Book {
 
     }
 
-    function createBook($authorId){        
-        
-        $query = "INSERT INTO
-                    " . $this->table_name . "
-                SET
-                    titulo=:titulo, fecha_edicion=:fecha_edicion";
- 
-        $stmt = $this->conn->prepare($query);
- 
-        $this->titulo=htmlspecialchars(strip_tags($this->titulo));
-        $this->fecha_edicion=htmlspecialchars(strip_tags($this->fecha_edicion));
- 
-        $stmt->bindParam(":titulo", $this->titulo);
-        $stmt->bindParam(":fecha_edicion", $this->fecha_edicion);
-
- 
-        if($stmt->execute()){
-            $lastBookId = $this->conn->lastInsertId();
-            if(isset($lastId)) {
-                echo "LAST ID ".$lastBookId;
-                insertAuthorBook($authorId, $lastBookId);
-            }
-            
-            return true;
-        }else{
-            return false;
-        }        
- 
-    }
-
-    function insertAuthorBook($authorId, $bookId) {
+    function insertAuthorBook($id_autor, $id_libro) {
 
         $query = "INSERT INTO
             autor_libro
@@ -123,6 +91,55 @@ class Book {
         }else{
             return false;
         }  
+
+    }
+
+    function createBook($id_autor){        
+        
+        $query = "INSERT INTO
+                    " . $this->table_name . "
+                SET
+                    titulo=:titulo, fecha_edicion=:fecha_edicion";
+ 
+        $stmt = $this->conn->prepare($query);
+ 
+        $this->titulo=htmlspecialchars(strip_tags($this->titulo));
+        $this->fecha_edicion=htmlspecialchars(strip_tags($this->fecha_edicion));
+ 
+        $stmt->bindParam(":titulo", $this->titulo);
+        $stmt->bindParam(":fecha_edicion", $this->fecha_edicion);
+
+ 
+        if($stmt->execute()){
+            $lastBookId = $this->conn->lastInsertId();
+            if(isset($lastBookId)) {
+                $this->insertAuthorBook($id_autor, $lastBookId);
+            }
+            
+            return true;
+        }else{
+            return false;
+        }        
+ 
+    }
+
+    function findById($id_libro) {
+
+        $query = "SELECT
+                    libro.titulo, libro.fecha_edicion, autor.id_autor, autor.nombre
+                FROM
+                    " . $this->table_name . "
+                INNER JOIN autor_libro 
+                    ON autor_libro.id_libro = libro.id_libro 
+                INNER JOIN autor 
+                    ON autor.id_autor = autor_libro.id_autor
+                WHERE autor_libro.id_libro = {$id_libro}  limit 0,1    
+                ";        
+
+        $stmt = $this->conn->prepare( $query );
+        $stmt->execute();
+     
+        return $stmt;
 
     }
 
