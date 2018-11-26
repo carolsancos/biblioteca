@@ -1,10 +1,11 @@
-Library with PHP
+**Library with PHP**
 
 Allows to create and update a library books with its authors.
 
-Author
+**Author**
+
 Carolina Sánchez Costa
 
-License
+**License**
 
 This project is licensed under the MIT License - see the LICENSE.md file for details
