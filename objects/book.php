@@ -49,6 +49,29 @@ class Book {
 
     }
 
+    function search($titulo, $fecha_edicion, $nro_autores) {
+        $query = "SELECT DISTINCT
+            libro.id_libro, libro.titulo, libro.fecha_edicion, COUNT(DISTINCT autor.id_autor) AS nro_autores
+        FROM
+            " . $this->table_name . "
+        INNER JOIN autor_libro 
+            ON autor_libro.id_libro = libro.id_libro 
+        INNER JOIN autor 
+            ON autor.id_autor = autor_libro.id_autor
+        WHERE libro.titulo LIKE '%{$titulo}' 
+            AND libro.fecha_edicion LIKE '%{$fecha_edicion}'              
+        GROUP BY libro.id_libro
+        ORDER BY libro.titulo";
+
+        //echo $query;
+
+        $stmt = $this->conn->prepare( $query );
+        $stmt->execute();
+     
+        return $stmt;
+
+    }
+
     
 }
 ?>

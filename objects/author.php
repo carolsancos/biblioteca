@@ -1,11 +1,9 @@
 <?php
 class Author{
  
-    // database connection and table name
     private $conn;
     private $table_name = "autor";
  
-    // object properties
     public $id_autor;
     public $nombre;
  
