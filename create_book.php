@@ -110,14 +110,13 @@ if($_POST){
                                 extract($row_author);
                                 echo "<tr>";
                                 echo "<td>";
+                                $checked = '';
                                 
                                 if(!empty($autores_array)) {
                                     foreach ($autores_array as $idAutor) {
                                                                                 
                                         if($id_autor == $idAutor){
                                             $checked = 'checked';
-                                        }else {
-                                            $checked = '';
                                         }
                                     }
                                 }
