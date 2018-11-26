@@ -34,11 +34,10 @@ if($_POST){
  
     $book->titulo = $_POST['titulo'];
     $book->fecha_edicion = $_POST['fecha_edicion'];
-    if(!empty($_POST['check_autores'])) {
-        $autoresList = $_POST['check_autores'];
+    $autoresList = $_POST['check_autores'];
+    if(!empty($autoresList) && !empty($book->titulo) && !empty($book->fecha_edicion)) {
 
         foreach ($autoresList as $autorId) {
-            echo "ID AUTOR ".$autorId; echo "<br />";
             $bookCreated = $book->createBook($autorId);
             if($bookCreated){
                 echo "<div class='alert alert-success'>El libro fue creado.</div>";
@@ -49,24 +48,28 @@ if($_POST){
         }
 
     }
-
-    echo $book->titulo; echo "<br/>";
-    echo $book->fecha_edicion; echo "<br/>";    
+   
     
 }
 ?>
  
 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-    <?php         
+    <?php
+        $i = 0;         
         if(isset($num) && $num > 0) {
-            
+            $autores_array = array();
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 extract($row);
 
                 $time = strtotime($fecha_edicion);
                 $newformatedDate = date('d-m-Y', $time);
 
+                $autores_array[$i] = $id_autor;
+
+                $i++;
+
             }
+
         }
     ?>
     <div class='table-responsive'>
@@ -107,7 +110,19 @@ if($_POST){
                                 extract($row_author);
                                 echo "<tr>";
                                 echo "<td>";
-                                echo "<input type='checkbox' name='check_autores[]'' value='{$id_autor}'>  ".$nombre;
+                                
+                                if(!empty($autores_array)) {
+                                    foreach ($autores_array as $idAutor) {
+                                                                                
+                                        if($id_autor == $idAutor){
+                                            $checked = 'checked';
+                                        }else {
+                                            $checked = '';
+                                        }
+                                    }
+                                }
+
+                                echo "<input type='checkbox' name='check_autores[]'' value='{$id_autor}' ".$checked." >  ".$nombre;
                                 echo "</td>";
                                 echo "</tr>";
                             }
@@ -121,8 +136,8 @@ if($_POST){
                 <div class='col-md-6 text-center'>                    
                     <button type="submit" class="btn btn-primary">Guardar</button>                
                 </div>
-                <div class='col-md-6 pull-left'>            
-                    <button type="submit" class="btn btn-danger">Cancelar</button>
+                <div class='col-md-6 pull-left'>
+                    <a href="index.php" id="cancel" name="cancel" class="btn btn-danger">Cancelar</a>       
                 </div>
             </div>
         </div>

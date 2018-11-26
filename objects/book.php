@@ -125,16 +125,14 @@ class Book {
 
     function findById($id_libro) {
 
-        $query = "SELECT
-                    libro.titulo, libro.fecha_edicion, autor.id_autor, autor.nombre
-                FROM
-                    " . $this->table_name . "
-                INNER JOIN autor_libro 
-                    ON autor_libro.id_libro = libro.id_libro 
-                INNER JOIN autor 
-                    ON autor.id_autor = autor_libro.id_autor
-                WHERE autor_libro.id_libro = {$id_libro}  limit 0,1    
-                ";        
+        $query = "SELECT libro.titulo, libro.fecha_edicion, autor.id_autor, autor.nombre 
+                    FROM libro 
+                    INNER JOIN autor_libro 
+                        ON autor_libro.id_libro=libro.id_libro 
+                    INNER JOIN autor 
+                        ON autor.id_autor=autor_libro.id_autor
+                    WHERE autor_libro.id_libro={$id_libro}";
+             
 
         $stmt = $this->conn->prepare( $query );
         $stmt->execute();

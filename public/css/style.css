@@ -7,3 +7,7 @@
     margin: 0 0 1em 0;
     overflow: hidden;
 }
+
+.page-header{
+	padding-top: 30px;
+}
